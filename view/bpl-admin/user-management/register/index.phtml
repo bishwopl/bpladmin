@@ -1,0 +1,13 @@
+<h2>Add New User</h2>
+
+<p>
+    <a class="btn btn-success btn-sm" href="<?= $this->url('bpl-admin/user-management') ?>">
+        Go to User Management
+    </a>
+</p>
+
+<?php
+$formRenderer = new \BplCrud\Form\FormRenderer();
+$formRenderer->displayForm($this->form);
+?>
+<?= $this->created == true ? '<p>User created successfully !</p>'.$this->message : '' ?>

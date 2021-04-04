@@ -1,0 +1,26 @@
+{
+    "name": "bishwopl/bpluser",
+    "description": "User and access management module for bishwopl/bpluser",
+    "type": "library",
+    "homepage": "https://github.com/bishwopl/bpladmin",
+    "keywords": [
+        "user-management",
+        "bpluser",
+        "acl"
+    ],
+    "authors": [
+        {
+            "name": "Bishwo Prasad Lamichhane",
+            "email": "bishwo.prasad@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "bishwopl/bpluser": "^2.0"
+    },
+    "autoload": {
+        "psr-4": { 
+            "BplAdmin\\": "src"
+        }
+    }
+}

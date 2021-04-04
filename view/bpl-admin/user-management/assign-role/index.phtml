@@ -1,0 +1,19 @@
+<h2>Assign Roles to User</h2>
+
+<p>
+    <a class="btn btn-success btn-sm" href="<?= $this->url('bpl-admin/user-management') ?>">
+        Go to User Management
+    </a>
+</p>
+
+
+<p>
+    <strong>
+        User : <?= $this->user->getEmail().'('.$this->user->getId().')' ?>
+    </strong>
+</p>
+<?php
+$formRenderer = new \BplCrud\Form\FormRenderer();
+$formRenderer->displayForm($this->form);
+?>
+<?= $this->created == true ? '<p>User updates successfully !</p>'.$this->message : '' ?>

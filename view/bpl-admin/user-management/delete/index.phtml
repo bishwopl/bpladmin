@@ -1,0 +1,16 @@
+<h2>
+    Delete confirmation
+</h2>
+<p>
+    <a class="btn btn-success btn-sm" href="<?= $this->url('bpl-admin/user-management') ?>">
+        Cancel Deletion
+    </a>
+</p>
+<p>
+    Role Name : <?= $this->user->getEmail() ?>
+</p>
+<form action="<?= $this->url('bpl-admin/user-management/delete',['user_id'=>$this->user->getId()]) ?>" method="POST">
+    <button type="submit" class="btn btn-danger">
+        Delete
+    </button>
+</form>

@@ -1,0 +1,96 @@
+<?php
+$sn = $this->startIndex + 1;
+$count = 0;
+
+function getUserRolesInString(\BplUser\Provider\BplUserInterface $user) {
+    $role = [];
+    $originalRoles = $user->getRoles();
+    foreach ($originalRoles as $r) {
+        $role = array_unique(array_merge_recursive($role, explode(',', getRoleRecursive($r))));
+    }
+    return $role;
+}
+
+function getRoleRecursive(\CirclicalUser\Provider\RoleInterface $r) {
+    if (!$r->getParent() instanceof \CirclicalUser\Provider\RoleInterface) {
+        return $r->getName();
+    }
+    return $r->getName() . ',' . getRoleRecursive($r->getParent());
+}
+
+$escaper = new \Laminas\Escaper\Escaper();
+
+?>
+<h2>User Management</h2>
+<p>
+    <a class="btn btn-success btn-sm" href="<?= $this->url('bpl-admin/user-management/register') ?>">
+        Add New User
+    </a>
+    <a class="btn btn-primary btn-sm" href="<?= $this->url('bpl-admin') ?>">
+        Go to Admin Page
+    </a>
+</p>
+<div style="text-align : right; padding-bottom: .5em">
+    <form method="GET" action="<?= $this->url('bpl-admin/user-management') ?>">
+        <input name="email" value="<?= $escaper->escapeHtml($this->searchTerm) ?>" placeholder="Search by email" class="form-control form-control-sm" style="max-width: 250px" >
+    </form>
+</div>
+<table class="table table-bordered table-hover table-sm">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>User Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>User Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->users as $user): ?>
+            <tr>
+                <td><?= $sn++ ?></td>
+                <td><?= $user->getEmail() ?></td>
+                <td><?= $user->getFirstName() ?></td>
+                <td><?= $user->getLastName() ?></td>
+                <td><?= implode(', ', getUserRolesInString($user)) ?></td>
+                <td>
+                    <select class="form-control form-control-sm" onchange="location = this.value;" title="Actions">
+                        <option>
+                            --Select Action--
+                        </option>
+                        <option value="<?= $this->url('bpl-admin/user-management/change-profile', ['user_id' => $user->getId()]) ?>">
+                            Edit Profile
+                        </option>
+                        <option value="<?= $this->url('bpl-admin/user-management/assign-roles', ['user_id' => $user->getId()]) ?>">
+                            Assign Roles
+                        </option>
+                        <option value="<?= $this->url('bpl-admin/user-management/change-password', ['user_id' => $user->getId()]) ?>">
+                            Change Password
+                        </option>
+                        <option value="<?= $this->url('bpl-admin/user-management/delete', ['user_id' => $user->getId()]) ?>">
+                            Delete
+                        </option>
+                        
+                    </select>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<?=
+    $this->partial(
+        'bpl-admin/pagination',
+        [
+            'currentPage' => $this->currentPage,
+            'noOfPages' => $this->noOfPages,
+            'totalRecordCount' => $this->totalRecordCount,
+            'route' => $this->url('bpl-admin/user-management'),
+            'pageRoute' => 'bpl-admin/user-management/list',
+            'pageKeyInRoute' => 'pageNo',
+            'query' => [
+                'email' => $this->searchTerm
+            ]
+        ]
+)
+?>

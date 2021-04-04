@@ -1,0 +1,52 @@
+<?php
+$sn = $this->startIndex + 1;
+?>
+<h2>Role Management</h2>
+<p>
+    <a class="btn btn-success btn-sm" href="<?= $this->url('bpl-admin/role-management', ['action' => 'add']) ?>">
+        Add New Role
+    </a>
+    <a class="btn btn-primary btn-sm" href="<?= $this->url('bpl-admin') ?>">
+        Go to Admin Page
+    </a>
+</p>
+<table class="table table-bordered table-hover table-sm">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>Role Name</th>
+            <th>Parent</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->roles as $role): ?>
+            <tr>
+                <td><?= $sn++ ?></td>
+                <td><?= $role->getName() ?></td>
+                <td><?= ($role->getParent() !== NULL) ? $role->getParent()->getname() : '' ?></td>
+                <td>
+                    <a class="" href="<?= $this->url('bpl-admin/role-management', ['action' => 'edit', 'id1' => $role->getId()]) ?>">
+                        <span class="badge badge-primary">Edit</span>
+                    </a>
+                    <a class="" href="<?= $this->url('bpl-admin/role-management', ['action' => 'delete', 'id1' => $role->getId()]) ?>">
+                        <span class="badge badge-danger">Delete</span>
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<?=
+$this->partial(
+        'bpl-admin/pagination',
+        [
+            'currentPage' => $this->currentPage,
+            'noOfPages' => $this->noOfPages,
+            'totalRecordCount' => $this->totalRecordCount,
+            'route' => $this->url('bpl-admin/role-management'),
+            'pageUrl' => $this->url('bpl-admin/role-management').'/index',
+            'pageKeyInRoute' => 'id1'
+        ]
+)
+?>
