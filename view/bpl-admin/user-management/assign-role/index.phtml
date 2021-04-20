@@ -12,8 +12,5 @@
         User : <?= $this->user->getEmail().'('.$this->user->getId().')' ?>
     </strong>
 </p>
-<?php
-$formRenderer = new \BplCrud\Form\FormRenderer();
-$formRenderer->displayForm($this->form);
-?>
-<?= $this->created == true ? '<p>User updates successfully !</p>'.$this->message : '' ?>
+<?= $this->partial('bpl-admin/form', ['form' => $this->form]) ?>
+<?= $this->created == true ? '<p>User Role Updated !</p>'.$this->message : '' ?>

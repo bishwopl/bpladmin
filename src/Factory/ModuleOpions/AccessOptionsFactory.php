@@ -1,11 +1,12 @@
 <?php
 
-namespace BplAdmin\ModuleOpions;
+namespace BplAdmin\Factory\ModuleOpions;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use BplAdmin\ModuleOpions\AccessOptions;
 
-class CrudOptionsFactory implements FactoryInterface {
+class AccessOptionsFactory implements FactoryInterface {
 
     /**
      * Create ModuleOptions Service
@@ -17,8 +18,8 @@ class CrudOptionsFactory implements FactoryInterface {
      */
     public function __invoke(ContainerInterface $container, $requestedName, Array $options = null) {
         $config = $container->get('Config');
-        return new \BplAdmin\ModuleOpions\CrudOptions(
-            isset($config['bpl_admin']) && isset($config['bpl_admin']['crud']) ? $config['bpl_admin']['crud'] : []
+        return new AccessOptions(
+            isset($config['bpl_admin']) && isset($config['bpl_admin']['acl']) ? $config['bpl_admin']['acl'] : ''
         );
     }
 

@@ -40,15 +40,24 @@ class AssignRoleController extends AbstractActionController {
         $created = false;
 
         $userId = $this->params()->fromRoute('user_id');
+        $currentRoles = [];
 
         $user = $this->userMapper->getUser($userId);
         if (!$user instanceof BplUserInterface) {
             throw new \Exception('User not found');
         }
+        $roles = $user->getRoles();
+        foreach($roles as $r){
+            $currentRoles[] = $r->getId();
+        }
+        
+        $this->assignRoleForm->setData(["roles" => $currentRoles]);
 
-        $this->assignRoleForm->populateValues(["roles" => $user->getRoles()]);
-        $data = $this->getRequest()->getPost();
-        $this->assignRoleForm->setData($data);
+        if ($this->getRequest()->isPost()){
+            $data = $this->getRequest()->getPost();
+            $this->assignRoleForm->setData($data);
+        }
+        
 
         if ($this->getRequest()->isPost() && $this->assignRoleForm->isValid()) {
             $allRoles = $this->roleMapper->getAllRoles();

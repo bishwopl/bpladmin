@@ -3,29 +3,65 @@
 namespace BplAdmin;
 
 use Laminas\Router\Http\Segment;
+use BplAdmin\Controller\AdminController;
+use BplAdmin\Controller\RoleManagementController;
+use BplAdmin\Controller\AccessManagement\AccessListController;
+use BplAdmin\Controller\UserManagement\AssignRoleController;
+use BplAdmin\Controller\UserManagement\CredentialController;
+use BplAdmin\Controller\UserManagement\DeleteController;
+use BplAdmin\Controller\UserManagement\ListController;
+use BplAdmin\Controller\UserManagement\ProfileController;
+use BplAdmin\Controller\UserManagement\RegisterController;
+use BplAdmin\Factory\Controller\AdminControllerFactory;
+use BplAdmin\Factory\Controller\RoleManagementControllerFactory;
+use BplAdmin\Factory\Controller\AccessManagement\AccessListControllerFactory;
+use BplAdmin\Factory\Controller\UserManagement\AssignRoleControllerFactory;
+use BplAdmin\Factory\Controller\UserManagement\CredentialControllerFactory;
+use BplAdmin\Factory\Controller\UserManagement\DeleteControllerFactory;
+use BplAdmin\Factory\Controller\UserManagement\ListControllerFactory;
+use BplAdmin\Factory\Controller\UserManagement\ProfileControllerFactory;
+use BplAdmin\Factory\Controller\UserManagement\RegisterControllerFactory;
+use BplAdmin\ModuleOpions\CrudOptions;
+use BplAdmin\Factory\ModuleOpions\CrudOptionsFactory;
+use BplAdmin\ModuleOpions\AccessOptions;
+use BplAdmin\Factory\ModuleOpions\AccessOptionsFactory;
+use BplAdmin\Service\ControllerAccessManagementService;
+use BplAdmin\Factory\Service\ControllerAccessManagementServiceFactory;
+use BplAdmin\Service\ControllerGuardConfigManager;
+use BplAdmin\Factory\Service\ControllerGuardConfigManagerFactory;
+use BplAdmin\Form\AppPermissionForm;
+use BplAdmin\Factory\Form\AppPermissionFormFactory;
 
 return [
     'controllers' => [
         'factories' => [
-            Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
-            Controller\RoleManagementController::class => Controller\Factory\RoleManagementControllerFactory::class,
-            Controller\UserManagement\ListController::class => Controller\Factory\UserManagement\ListControllerFactory::class,
-            Controller\UserManagement\RegisterController::class => Controller\Factory\UserManagement\RegisterControllerFactory::class,
-            Controller\UserManagement\ProfileController::class => Controller\Factory\UserManagement\ProfileControllerFactory::class,
-            Controller\UserManagement\AssignRoleController::class => Controller\Factory\UserManagement\AssignRoleControllerFactory::class,
-            Controller\UserManagement\CredentialController::class => Controller\Factory\UserManagement\CredentialControllerFactory::class,
-            Controller\UserManagement\DeleteController::class => Controller\Factory\UserManagement\DeleteControllerFactory::class,
+            AdminController::class => AdminControllerFactory::class,
+            RoleManagementController::class => RoleManagementControllerFactory::class,
+            ListController::class => ListControllerFactory::class,
+            RegisterController::class => RegisterControllerFactory::class,
+            ProfileController::class => ProfileControllerFactory::class,
+            AssignRoleController::class => AssignRoleControllerFactory::class,
+            CredentialController::class => CredentialControllerFactory::class,
+            DeleteController::class => DeleteControllerFactory::class,
+            AccessListController::class => AccessListControllerFactory::class
         ],
     ],
     'service_manager' => [
         'factories' => [
-            ModuleOpions\CrudOptions::class => ModuleOpions\CrudOptionsFactory::class,
-            Service\UserService::class => Service\Factory\UserServiceFactory::class
+            CrudOptions::class => CrudOptionsFactory::class,
+            AccessOptions::class => AccessOptionsFactory::class,
+            ControllerAccessManagementService::class => ControllerAccessManagementServiceFactory::class,
+            ControllerGuardConfigManager::class => ControllerGuardConfigManagerFactory::class,
+            AppPermissionForm::class => AppPermissionFormFactory::class,
         ],
     ],
     'bpl_admin' => [
         'crud' => [
-            'items_per_page' => 2,
+            'items_per_page' => 5,
+        ],
+        'acl' => [
+            'acl_filename' => 'bpladmin.acl.local.php',
+            'acl_file_location' => __DIR__.'/../../../../config/autoload',
         ],
     ],
     'router' => [
@@ -35,7 +71,7 @@ return [
                 'options' => [
                     'route' => '/admin',
                     'defaults' => [
-                        'controller' => Controller\AdminController::class,
+                        'controller' => AdminController::class,
                         'action' => 'index',
                     ],
                 ],
@@ -44,10 +80,10 @@ return [
                     'role-management' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/role-management[/:action][/:id1]',
+                            'route' => '/role-management[/:action][/:id]',
                             'defaults' => [
-                                'controller' => Controller\RoleManagementController::class,
-                                'action' => 'index',
+                                'controller' => RoleManagementController::class,
+                            //'action' => 'index',
                             ],
                         ],
                     ],
@@ -56,7 +92,7 @@ return [
                         'options' => [
                             'route' => '/user-management',
                             'defaults' => [
-                                'controller' => Controller\UserManagement\ListController::class,
+                                'controller' => ListController::class,
                                 'action' => 'index',
                             ],
                         ],
@@ -67,7 +103,7 @@ return [
                                 'options' => [
                                     'route' => '/list[/:pageNo]',
                                     'defaults' => [
-                                        'controller' => Controller\UserManagement\ListController::class,
+                                        'controller' => ListController::class,
                                         'action' => 'index',
                                     ],
                                 ],
@@ -77,7 +113,7 @@ return [
                                 'options' => [
                                     'route' => '/register',
                                     'defaults' => [
-                                        'controller' => Controller\UserManagement\RegisterController::class,
+                                        'controller' => RegisterController::class,
                                         'action' => 'index',
                                     ],
                                 ],
@@ -87,7 +123,7 @@ return [
                                 'options' => [
                                     'route' => '/assign-roles/[:user_id]',
                                     'defaults' => [
-                                        'controller' => Controller\UserManagement\AssignRoleController::class,
+                                        'controller' => AssignRoleController::class,
                                         'action' => 'index',
                                     ],
                                 ],
@@ -97,7 +133,7 @@ return [
                                 'options' => [
                                     'route' => '/change-profile/[:user_id]',
                                     'defaults' => [
-                                        'controller' => Controller\UserManagement\ProfileController::class,
+                                        'controller' => ProfileController::class,
                                         'action' => 'index',
                                     ],
                                 ],
@@ -107,7 +143,7 @@ return [
                                 'options' => [
                                     'route' => '/change-password/[:user_id]',
                                     'defaults' => [
-                                        'controller' => Controller\UserManagement\CredentialController::class,
+                                        'controller' => CredentialController::class,
                                         'action' => 'index',
                                     ],
                                 ],
@@ -117,7 +153,30 @@ return [
                                 'options' => [
                                     'route' => '/delete/[:user_id]',
                                     'defaults' => [
-                                        'controller' => Controller\UserManagement\DeleteController::class,
+                                        'controller' => DeleteController::class,
+                                        'action' => 'index',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'access-management' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/access-management',
+                            'defaults' => [
+                                'controller' => AccessListController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/list[/:pageNo]',
+                                    'defaults' => [
+                                        'controller' => ListController::class,
                                         'action' => 'index',
                                     ],
                                 ],
@@ -131,30 +190,33 @@ return [
     'circlical' => [
         'user' => [
             'guards' => [
-                'BplUser' => [
+                'bpl-admin' => [
                     'controllers' => [
-                        Controller\AdminController::class => [
+                        AdminController::class => [
                             'default' => ['administrator'],
                         ],
-                        Controller\RoleManagementController::class => [
+                        RoleManagementController::class => [
                             'default' => ['administrator'],
                         ],
-                        Controller\UserManagement\ListController::class => [
+                        ListController::class => [
                             'default' => ['administrator'],
                         ],
-                        Controller\UserManagement\RegisterController::class => [
+                        RegisterController::class => [
                             'default' => ['administrator'],
                         ],
-                        Controller\UserManagement\AssignRoleController::class => [
+                        AssignRoleController::class => [
                             'default' => ['administrator'],
                         ],
-                        Controller\UserManagement\ProfileController::class => [
+                        ProfileController::class => [
                             'default' => ['administrator'],
                         ],
-                        Controller\UserManagement\CredentialController::class => [
+                        CredentialController::class => [
                             'default' => ['administrator'],
                         ],
-                        Controller\UserManagement\DeleteController::class => [
+                        DeleteController::class => [
+                            'default' => ['administrator'],
+                        ],
+                        AccessListController::class => [
                             'default' => ['administrator'],
                         ],
                     ],
@@ -167,7 +229,8 @@ return [
             'bpl-admin' => __DIR__ . '/../view',
         ],
         'template_map' => [
-            'bpl-admin/pagination' => __DIR__ . '/../view/bpl-admin/partial/pagination.phtml',
+            'bpl-admin/pagination' => __DIR__ . '/../view/partial/pagination.phtml',
+            'bpl-admin/form' => __DIR__ . '/../view/partial/form.phtml',
         ],
     ],
 ];

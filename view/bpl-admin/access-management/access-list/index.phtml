@@ -1,0 +1,15 @@
+<?php
+
+/* @var $appConfig \BplAdmin\Entity\AppPermission */
+$appConfig = $this->appConfig;
+
+//\Symfony\Component\VarDumper\VarDumper::dump($appConfig);
+
+//\Symfony\Component\VarDumper\VarDumper::dump($appConfig->toArray());
+
+//\Symfony\Component\VarDumper\VarDumper::dump($this->configArray);
+
+//\Symfony\Component\VarDumper\VarDumper::dump($this->form);
+?>
+
+<?php echo $this->partial('bpl-admin/form', ['form' => $this->form]) ?>

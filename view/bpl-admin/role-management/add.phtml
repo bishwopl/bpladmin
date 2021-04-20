@@ -6,8 +6,5 @@
     </a>
 </p>
 
-<?php
-$formRenderer = new \BplCrud\Form\FormRenderer();
-$formRenderer->displayForm($this->form);
-?>
+<?= $this->partial('bpl-admin/form', ['form' => $this->form]) ?>
 <?= $this->created == true ? 'Role created successfully !' : '' ?>

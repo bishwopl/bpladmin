@@ -3,8 +3,10 @@
 namespace BplAdmin\Form;
 
 use Laminas\Form\Element;
+use Laminas\Form\Form;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
-class ChangeCredentialForm extends \Laminas\Form\Form implements \Laminas\InputFilter\InputFilterProviderInterface {
+class ChangeCredentialForm extends Form implements InputFilterProviderInterface {
 
     public function __construct($name = NULL, $options = []) {
         parent::__construct($name, $options);

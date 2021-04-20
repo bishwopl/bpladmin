@@ -6,29 +6,27 @@ use Laminas\Form\Element;
 
 class AssignRoleForm extends \Laminas\Form\Form {
 
-    public function __construct(\Doctrine\Persistence\ObjectManager $persistanceManager, $name = NULL, $options = []) {
+    public function __construct($roleNames, $name = NULL, $options = []) {
         parent::__construct($name, $options);
 
-        $this->setAttribute("enctype", "multipart/form-data");
-        $this->setAttribute("METHOD", "POST");
+        $this->setAttribute('enctype', 'multipart/form-data');
+        $this->setAttribute('METHOD', 'POST');
 
-        $this->add([
-            "name" => "roles",
-            "type" => \DoctrineModule\Form\Element\ObjectSelect::class,
-            "options" => [
-                "label" => "Parent Role",
-                "object_manager" => $persistanceManager,
-                "target_class" => \CirclicalUser\Entity\Role::class,
-                "property" => "name",
-                "display_empty_item" => false,
-                "empty_item_label" => "--Select User Roles--",
-            ],
-            "attributes" => [
-                "multiple" => true,
-                "id" => "rolesId",
-                'class' => 'form-control input'
-            ],
+        $parentSelect = new Element\Select('roles');
+        $parentSelect->setOptions([
+            'label' => 'Assign Roles',
+            'empty_option' => '--Assign role--',
         ]);
+        $parentSelect->setValueOptions($roleNames);
+        $parentSelect->setAttributes([
+            'id' => 'parentId',
+            'placeholder' => 'parent',
+            'multiple' => true,
+            'class' => 'form-control input',
+            'style' => 'min-height: 200px;'
+        ]);
+
+        $this->add($parentSelect);
         
         $csrf = new Element\Csrf('csrf');
         $csrf->getCsrfValidator()->setTimeout(600);

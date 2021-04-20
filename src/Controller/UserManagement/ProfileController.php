@@ -33,6 +33,7 @@ class ProfileController extends AbstractActionController {
         $userId = $this->params()->fromRoute('user_id');
 
         $user = $this->userMapper->getUser($userId);
+        
         if (!$user instanceof BplUserInterface) {
             throw new \Exception('User not found');
         }

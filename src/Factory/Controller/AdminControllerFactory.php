@@ -1,6 +1,6 @@
 <?php
 
-namespace BplAdmin\Controller\Factory;
+namespace BplAdmin\Factory\Controller;
 
 use BplAdmin\Controller\AdminController;
 use Psr\Container\ContainerInterface;

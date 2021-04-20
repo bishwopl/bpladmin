@@ -9,16 +9,16 @@ $pageNoArrayForPagination = $pageNoArray;
 if ($this->currentPage == 1) {
     $previousClass .= ' disabled';
 }
-if ($this->currentPage == $this->noOfPages) {
+if ($this->currentPage == $this->noOfPages || $this->noOfPages<=1 ) {
     $nextClass .= ' disabled';
 }
 
 if ($this->noOfPages > 1) {
     if ($this->currentPage > 1) {
-        $previousPageUrl = $this->url($this->pageRoute, ['pageNo' => $this->currentPage - 1], ['query' => $this->query]);
+        $previousPageUrl = $this->url($this->pageRoute, ['action' => $this->action, $this->pageKeyInRoute => $this->currentPage - 1], ['query' => $this->query]);
     }
     if ($this->currentPage < $this->noOfPages) {
-        $nextPageUrl = $this->url($this->pageRoute, ['pageNo' => $this->currentPage + 1], ['query' => $this->query]);
+        $nextPageUrl = $this->url($this->pageRoute, ['action' => $this->action, $this->pageKeyInRoute => $this->currentPage + 1], ['query' => $this->query]);
     }
 }
 
@@ -46,7 +46,7 @@ if ($this->noOfPages > 10) {
         </li>
         <?php foreach ($pageNoArrayForPagination as $i): ?>
             <li class="page-item <?= $this->currentPage == $i || $i == '..' ? ' disabled' : '' ?>">
-                <a class="page-link" href="<?= $this->currentPage == $i ? '#' : $this->url($this->pageRoute, ['pageNo' => $i], ['query' => $this->query]) ?>">
+                <a class="page-link" href="<?= $this->currentPage == $i ? '#' : $this->url($this->pageRoute, ['action' => $this->action, $this->pageKeyInRoute => $i], ['query' => $this->query]) ?>">
                     <?= $i ?>
                 </a>
             </li>
@@ -57,7 +57,7 @@ if ($this->noOfPages > 10) {
         <li>
             <select class="form-control" onchange="location = this.value;" title="Go to page">
                 <?php foreach ($pageNoArray as $i): ?>
-                    <option <?= $i == $this->currentPage ? 'selected="selected"' : '' ?> value="<?= $this->url($this->pageRoute, ['pageNo' => $i], ['query' => $this->query]) ?>" >
+                    <option <?= $i == $this->currentPage ? 'selected="selected"' : '' ?> value="<?= $this->url($this->pageRoute, ['action' => $this->action, $this->pageKeyInRoute => $i], ['query' => $this->query]) ?>" >
                         <?= $i ?>
                     </option>
                 <?php endforeach; ?>

@@ -1,0 +1,26 @@
+<?php
+
+$this->form = $form;
+$this->form->prepare();
+echo $this->form()->openTag($this->form);
+
+foreach ($this->form as $element) {
+    if ($element instanceof \Laminas\Form\Fieldset) {
+        foreach ($element as $em) {
+            echo '<div class="form_element">' . PHP_EOL;
+            if ($em instanceof \Laminas\Form\Element\Collection) {
+                if ($em->getCount() > 0) {
+                    echo $this->formCollection()->render($em) . PHP_EOL.'xy';
+                }
+            } else {
+                echo $this->formRow()->render($em) . PHP_EOL;
+            }
+            echo '</div>' . PHP_EOL;
+        }
+    } else {
+        echo '<div class="form_element">' . PHP_EOL;
+        echo $this->formRow()->render($element) . PHP_EOL;
+        echo '</div>' . PHP_EOL;
+    }
+}
+echo $this->form()->closeTag();

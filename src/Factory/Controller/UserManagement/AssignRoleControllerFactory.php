@@ -1,6 +1,6 @@
 <?php
 
-namespace BplAdmin\Controller\Factory\UserManagement;
+namespace BplAdmin\Factory\Controller\UserManagement;
 
 use BplAdmin\Controller\UserManagement\AssignRoleController;
 use BplAdmin\Form\AssignRoleForm;
@@ -17,15 +17,21 @@ class AssignRoleControllerFactory implements FactoryInterface {
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) {
         $config = $container->get('Config');
-        $em = $container->get(\Doctrine\ORM\EntityManager::class);
         $userMapperKey = $config['circlical']['user']['providers']['user'];
         $roleMapperKey = $config['circlical']['user']['providers']['role'];
-        $form = new AssignRoleForm($em, 'roles');
+        $roleMapper = $container->get($roleMapperKey);
+        
+        $allRoles = $roleMapper->getAllRoles();
+        
+        foreach($allRoles as $r){
+            $roleValueOptions[$r->getId()] = $r->getName();
+        }
+        $form = new AssignRoleForm($roleValueOptions, 'roles');
 
         return new AssignRoleController(
                 $form,
                 $container->get($userMapperKey),
-                $container->get($roleMapperKey),
+                $roleMapper,
         );
     }
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace BplAdmin\Controller\Factory\UserManagement;
+namespace BplAdmin\Factory\Controller\UserManagement;
 
 use BplAdmin\Controller\UserManagement\ProfileController;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ProfileControllerFactory implements FactoryInterface
@@ -25,7 +25,7 @@ class ProfileControllerFactory implements FactoryInterface
         
         foreach ($changeProfileForm as $element){
             if($element instanceof \Laminas\Form\Element && $element->getAttribute('type')!=='submit'){
-                $element->setAttribute("class", "form-control input form-control-sm");
+                $element->setAttribute("class", "form-control input");
             }
             if($element->getName() == 'email'){
                 $hasEmailField = true;

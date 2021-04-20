@@ -26,12 +26,8 @@ $sn = $this->startIndex + 1;
                 <td><?= $role->getName() ?></td>
                 <td><?= ($role->getParent() !== NULL) ? $role->getParent()->getname() : '' ?></td>
                 <td>
-                    <a class="" href="<?= $this->url('bpl-admin/role-management', ['action' => 'edit', 'id1' => $role->getId()]) ?>">
-                        <span class="badge badge-primary">Edit</span>
-                    </a>
-                    <a class="" href="<?= $this->url('bpl-admin/role-management', ['action' => 'delete', 'id1' => $role->getId()]) ?>">
-                        <span class="badge badge-danger">Delete</span>
-                    </a>
+                    <a class="" href="<?= $this->url('bpl-admin/role-management', ['action' => 'edit', 'id' => $role->getId()]) ?>"><span class="badge badge-primary">Edit</span></a>
+                    <a class="" href="<?= $this->url('bpl-admin/role-management', ['action' => 'delete', 'id' => $role->getId()]) ?>"><span class="badge badge-danger">Delete</span></a>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -44,9 +40,9 @@ $this->partial(
             'currentPage' => $this->currentPage,
             'noOfPages' => $this->noOfPages,
             'totalRecordCount' => $this->totalRecordCount,
-            'route' => $this->url('bpl-admin/role-management'),
-            'pageUrl' => $this->url('bpl-admin/role-management').'/index',
-            'pageKeyInRoute' => 'id1'
+            'pageRoute' => 'bpl-admin/role-management',
+            'action' => 'index',
+            'pageKeyInRoute' => 'id'
         ]
 )
 ?>

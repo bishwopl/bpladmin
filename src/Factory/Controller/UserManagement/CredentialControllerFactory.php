@@ -1,12 +1,13 @@
 <?php
 
-namespace BplAdmin\Controller\Factory\UserManagement;
+namespace BplAdmin\Factory\Controller\UserManagement;
 
-use BplAdmin\Controller\UserManagement\DeleteController;
+use BplAdmin\Controller\UserManagement\CredentialController;
+use BplAdmin\Form\ChangeCredentialForm;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class DeleteControllerFactory implements FactoryInterface {
+class CredentialControllerFactory implements FactoryInterface {
 
     /**
      * @param ContainerInterface $container
@@ -17,10 +18,9 @@ class DeleteControllerFactory implements FactoryInterface {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) {
         $config = $container->get('Config');
         $userMapperKey = $config['circlical']['user']['providers']['user'];
-        $authMapperKey = $config['circlical']['user']['providers']['auth'];
-        return new DeleteController(
+        return new CredentialController(
                 $container->get($userMapperKey),
-                $container->get($authMapperKey)
+                new ChangeCredentialForm('cred-form')
         );
     }
 

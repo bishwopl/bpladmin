@@ -1,6 +1,6 @@
 <?php
 
-namespace BplAdmin\Controller\Factory\UserManagement;
+namespace BplAdmin\Factory\Controller\UserManagement;
 
 use BplAdmin\Controller\UserManagement\ListController;
 use Interop\Container\ContainerInterface;

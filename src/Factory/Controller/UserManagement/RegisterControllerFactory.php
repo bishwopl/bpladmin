@@ -1,12 +1,12 @@
 <?php
 
-namespace BplAdmin\Controller\Factory;
+namespace BplAdmin\Factory\Controller\UserManagement;
 
-use BplAdmin\Controller\UserManagementController;
+use BplAdmin\Controller\UserManagement\RegisterController;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class UserManagementControllerFactory implements FactoryInterface
+class RegisterControllerFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
@@ -18,11 +18,8 @@ class UserManagementControllerFactory implements FactoryInterface
     {
         $config = $container->get('Config');
         $userEntity = $config['circlical']['user']['doctrine']['entity'];
-        $authMapperKey = $config['circlical']['user']['providers']['auth'];
-        $authenticationMapper = $container->get($authMapperKey);
         $moduleOptions = $container->get(\BplUser\Options\ModuleOptions::class);
         $registrationForm = $container->get($moduleOptions->getRegistrationFormFactory());
-        $profileForm = $container->get($moduleOptions->getChangeProfileFormFactory());
         
         if ($moduleOptions->getUseRegistrationFormCaptcha()) {
             $registrationForm->remove('captcha');
@@ -34,19 +31,11 @@ class UserManagementControllerFactory implements FactoryInterface
             }
         }
         
-        foreach ($profileForm as $element){
-            if($element instanceof \Laminas\Form\Element && $element->getAttribute('type')!=='submit'){
-                $element->setAttribute("class", "form-control input");
-            }
-        }
-        
-        return new UserManagementController(
-            $container->get(\BplAdmin\ModuleOpions\CrudOptions::class),
-            $container->get(\BplAdmin\Service\UserService::class),
+        return new RegisterController(
+            $container->get(\BplUser\Service\BplUserService::class),
+            $container->get(\CirclicalUser\Service\AuthenticationService::class),
             $registrationForm,
-            $profileForm,
-            new $userEntity,
-            $authenticationMapper
+            new $userEntity
         );
     }
 }
