@@ -23,7 +23,7 @@ class AppPermissionFormFactory implements FactoryInterface {
         $allRoles = $roleMapper->getAllRoles();
 
         foreach ($allRoles as $r) {
-            $roleValueOptions[$r->getId()] = $r->getName();
+            $roleValueOptions[$r->getName()] = $r->getName();
         }
         return new AppPermissionForm(
                 $container->get(ControllerGuardConfigManager::class),

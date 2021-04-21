@@ -3,8 +3,9 @@
 namespace BplAdmin\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Laminas\Stdlib\ArraySerializableInterface;
 
-class ActionPermission {
+class ActionPermission implements ArraySerializableInterface {
 
     /**
      * @var string
@@ -49,7 +50,7 @@ class ActionPermission {
         return $this->allowedRoles;
     }
 
-    public static function createFromArray(string $actionName, array $allowedRoles): ActionPermission {
+    public static function createFromConfigArray(string $actionName, array $allowedRoles): ActionPermission {
         $obj = new ActionPermission();
         $obj->actionName = $actionName;
         foreach ($allowedRoles as $roleName) {
@@ -58,10 +59,37 @@ class ActionPermission {
         return $obj;
     }
 
-    public function toArray(): array {
-        return [
+    public function toConfigArray(): array {
+        return $this->allowedRoles->count()>0?[
             $this->actionName => $this->allowedRoles->toArray()
+        ]:[];
+    }
+
+    /**
+     * @param array $array
+     * @return void
+     */
+    public function exchangeArray(array $array): void {
+        $this->actionName = $array['actionName'];
+        if(isset($array['allowedRoles']) && is_array($array['allowedRoles'])){
+            foreach($array['allowedRoles'] as $role){
+                $this->addAllowedRole($role);
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getArrayCopy(): array {
+        return [
+            'actionName' => $this->actionName,
+            'allowedRoles' => $this->allowedRoles->toArray()
         ];
+    }
+    
+    public static function getEmptyObject(): ActionPermission {
+        return new ActionPermission();
     }
 
 }

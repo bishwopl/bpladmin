@@ -4,8 +4,10 @@ namespace BplAdmin\Entity;
 
 use BplAdmin\Entity\ControllerPermission;
 use Doctrine\Common\Collections\ArrayCollection;
+use Laminas\Stdlib\ArraySerializableInterface;
+use Laminas\Hydrator\ArraySerializableHydrator;
 
-class AppPermission {
+class AppPermission implements ArraySerializableInterface {
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection 
@@ -29,7 +31,7 @@ class AppPermission {
             }
             foreach ($controllerConfig['controllers'] as $controllerName => $controllerConfig) {
 
-                $controllerPermission = ControllerPermission::createFromArray($controllerName, $controllerConfig);
+                $controllerPermission = ControllerPermission::createFromConfigArray($controllerName, $controllerConfig);
                 $appPermission->addControllerPermission($controllerPermission);
             }
         }
@@ -39,7 +41,7 @@ class AppPermission {
     public function allowRolesForController(string $controllerName, array $roles = []): void {
         $controllerGaurd = $this->getControllerGaurd($controllerName);
         if ($controllerGaurd == null) {
-            $controllerGaurd = ControllerPermission::createFromArray($controllerName, []);
+            $controllerGaurd = ControllerPermission::createFromConfigArray($controllerName, []);
         } else {
             $key = $this->controllerPermissions->indexOf($controllerGaurd);
             $this->controllerPermissions->remove($key);
@@ -67,7 +69,7 @@ class AppPermission {
     public function allowAllRolesToController(string $controllerName): void {
         $controllerGaurd = $this->getControllerGaurd($controllerName);
         if ($controllerGaurd == null) {
-            $controllerGaurd = ControllerPermission::createFromArray($controllerName, ['default' => []]);
+            $controllerGaurd = ControllerPermission::createFromConfigArray($controllerName, ['default' => []]);
         } else {
             $key = $this->controllerPermissions->indexOf($controllerGaurd);
             $this->controllerPermissions->remove($key);
@@ -92,7 +94,7 @@ class AppPermission {
     public function allowRolesToAccessAction(string $controllerName, string $actionName, array $roles): void {
         $controllerGaurd = $this->getControllerGaurd($controllerName);
         if ($controllerGaurd == null) {
-            $controllerGaurd = ControllerPermission::createFromArray($controllerName, []);
+            $controllerGaurd = ControllerPermission::createFromConfigArray($controllerName, []);
         } else {
             $key = $this->controllerPermissions->indexOf($controllerGaurd);
             $this->controllerPermissions->remove($key);
@@ -115,10 +117,16 @@ class AppPermission {
         return;
     }
 
-    public function toArray(): array {
+    public function toConfigArray(): array {
         $controllerConfig = [];
         foreach ($this->controllerPermissions as $c) {
-            $controllerConfig = array_merge($controllerConfig, $c->toArray());
+            $controllerConfig = array_merge($controllerConfig, $c->toConfigArray());
+        }
+        
+        foreach($controllerConfig as $controllerName => $config){
+            if(sizeof($config) == 0){
+                unset($controllerConfig[$controllerName]);
+            }
         }
 
         return [
@@ -171,20 +179,47 @@ class AppPermission {
         }
         return $ret;
     }
-    
-    public function getDefaultControllerRoles(string $controllerName):?array{
+
+    public function getDefaultControllerRoles(string $controllerName): ?array {
         $ret = [];
         $controller = $this->controllerPermissions->get($controllerName);
         if ($controller instanceof ControllerPermission) {
-            if($controller->getAllowAllByDefault()==true){
+            if ($controller->getAllowAllByDefault() == true) {
                 $ret = [];
-            }elseif($controller->getDefaultAllowedRoles()->count()>0){
+            } elseif ($controller->getDefaultAllowedRoles()->count() > 0) {
                 $ret = $controller->getDefaultAllowedRoles()->toArray();
-            }else{
+            } else {
                 $ret = null;
             }
         }
         return $ret;
+    }
+
+    /**
+     * To be used for hydration using array serializable hydrator
+     * @param array $array
+     * @return void
+     */
+    public function exchangeArray(array $array): void {
+        $hydrator = new ArraySerializableHydrator();
+        foreach($array as $controllerConfig){
+            if(!is_array($controllerConfig)){
+                continue;
+            }
+            $controller = ControllerPermission::getEmptyObject();
+            $hydrator->hydrate($controllerConfig, $controller);
+            $this->addControllerPermission($controller);
+        }
+    }
+
+    public function getArrayCopy(): array {
+        return $this->controllerPermissions->map(function(ControllerPermission $c) {
+            return $c->getArrayCopy();
+        })->toArray();
+    }
+    
+    public static function getEmptyObject() : AppPermission {
+        return new AppPermission();
     }
 
 }

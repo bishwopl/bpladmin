@@ -52,14 +52,20 @@ class ControllerGuardConfigManager {
         $this->initialized = true;
     }
 
+    /**
+     * @return AppPermission
+     */
     public function getAppGuardConfig(): AppPermission {
         return $this->appPermissions;
     }
 
-    public function writeConfig(): void {
+    public function writeConfig(AppPermission $a = NULL): void {
+        if( $a== NULL){
+            $a = $this->appPermissions;
+        }
         $configFileName = $this->aclOptions->getAclFileLocation() . '/' . $this->aclOptions->getAclFilename();
         if (!$this->initialized) {
-            $this->initializeConfig();
+            //$this->initializeConfig();
         }
         if (is_file($configFileName)) {
             unlink($configFileName);
@@ -67,7 +73,7 @@ class ControllerGuardConfigManager {
         $writer = new ConfigWriter();
         $writer->setUseBracketArraySyntax(true);
         $writer->setUseClassNameScalars(true);
-        $writer->toFile($configFileName, $this->appPermissions->toArray());
+        $writer->toFile($configFileName, $a->toConfigArray());
     }
 
     public function getControllerNames(): array {

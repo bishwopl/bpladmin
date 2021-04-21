@@ -39,54 +39,58 @@ class ControllerPermissionFieldset extends Fieldset implements InputFilterProvid
 
     public function init(): void {
         $this->add([
-            'type' => Element\Text::class,
+            'type' => Element\Hidden::class,
             'name' => 'controllerName',
             'options' => [
                 'label' => 'Controller Name',
+            ],
+            'attributes' => [
+                'value' => $this->controllerName,
+                'readOnly' => true,
+                'class' => 'form-control input',
             ],
         ]);
 
         $this->add([
             'type' => Element\Checkbox::class,
-            'name' => 'allowAllRoles',
+            'name' => 'allowAllByDefault',
             'options' => [
-                'label' => 'Default Allowed Roles',
+                'label' => 'Allow all roles',
+                'class' => 'form-control input'
             ],
         ]);
 
         $roleSelect = new Element\Select('defaultAllowedRoles');
         $roleSelect->setOptions([
-            'label' => 'Select Allowed Roles',
+            'label' => 'Select Default Allowed Roles',
             'empty_option' => '--Select Allowed Role--',
         ]);
         $roleSelect->setValueOptions($this->roleNames);
         $roleSelect->setAttributes([
             'multiple' => true,
             'class' => 'form-control input',
-            'style' => 'min-height: 200px;'
         ]);
 
         $this->add($roleSelect);
 
-        $this->add([
-            'type' => Element\Collection::class,
-            'name' => 'actionPermissions',
-            'options' => [
-                'label' => 'Action Permissions',
-                'count' => sizeof($this->actionNames),
-                'should_create_template' => true,
-                'target_element' => new ActionPermissionFieldset($this->roleNames)
-            ],
-        ]);
-
-        /** foreach ($this->actionNames as $a) {
-          $actionFieldset = new ActionPermissionFieldset($a, $this->roleNames);
-          $this->add($actionFieldset);
-          } */
+        $actionsFieldSet = new Fieldset('actions');
+        
+        foreach ($this->actionNames as $a) {
+            $fieldset = new ActionPermissionFieldset($a, $this->roleNames);
+            $actionsFieldSet->add($fieldset);
+        }
+        $this->add($actionsFieldSet);
     }
 
     public function getInputFilterSpecification(): array {
-        return [];
+        return [
+            'allowAllRoles' => [
+                'required' => false
+            ],
+            'defaultAllowedRoles' => [
+                'required' => false
+            ],
+        ];
     }
 
 }
