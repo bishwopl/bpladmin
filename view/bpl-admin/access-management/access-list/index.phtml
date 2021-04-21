@@ -5,7 +5,7 @@
 
 //\Symfony\Component\VarDumper\VarDumper::dump($appConfig);
 
-\Symfony\Component\VarDumper\VarDumper::dump($this->appConfig->getArrayCopy());
+//\Symfony\Component\VarDumper\VarDumper::dump($this->appConfig->getArrayCopy());
 
 //\Symfony\Component\VarDumper\VarDumper::dump($this->configArray);
 
@@ -14,6 +14,11 @@
 <h1>
     Controller Access Management
 </h1>
+<p>
+    <a class="btn btn-primary btn-sm" href="<?= $this->url('bpl-admin') ?>">
+        Go to Admin Page
+    </a>
+</p>
 <p>
     Select desired roles for each controller and actions from the form below. 
     Please refresh the application after form submission. Delete any configuration

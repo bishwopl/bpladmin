@@ -77,7 +77,13 @@ class ControllerGuardConfigManager {
     }
 
     public function getControllerNames(): array {
-        return array_keys($this->applicationConfigArray['controllers']['factories']);
+        $allControllerNames = array_keys($this->applicationConfigArray['controllers']['factories']);
+        foreach ($allControllerNames as $key=>$value){
+            if(strpos($value, 'Cli')){
+                unset($allControllerNames[$key]);
+            }
+        }
+        return array_values($allControllerNames);
     }
 
     public function getActionNames($controller): array {
