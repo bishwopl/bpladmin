@@ -1,0 +1,13 @@
+<?php
+
+return [
+    'bpl_admin' => [
+        'crud' => [
+            'items_per_page' => 5,
+        ],
+        'acl' => [
+            'acl_filename' => 'bpladmin.acl.local.php',
+            'acl_file_location' => __DIR__.'/../../../../config/autoload',
+        ],
+    ],
+];
