@@ -56,7 +56,9 @@ class ControllerPermissionFieldset extends Fieldset implements InputFilterProvid
             'name' => 'allowAllByDefault',
             'options' => [
                 'label' => 'Allow all roles',
-                'class' => 'form-control input'
+            ],
+            'attributes' => [
+                //'class' => 'form-control input',
             ],
         ]);
 
