@@ -78,7 +78,7 @@ class ListController extends AbstractActionController {
             'noOfPages' => $noOfPages,
             'startIndex' => $startIndex,
             'currentPage' => $pageNo,
-            'searchTerm' => $searchTerm
+            'searchTerm' => ($searchTerm ==null?'':$searchTerm)
         ]);
     }
 

@@ -83,7 +83,6 @@ return [
                             'route' => '/role-management[/:action][/:id]',
                             'defaults' => [
                                 'controller' => RoleManagementController::class,
-                            //'action' => 'index',
                             ],
                         ],
                     ],
