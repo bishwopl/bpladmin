@@ -23,6 +23,8 @@ use BplAdmin\Factory\Controller\UserManagement\ProfileControllerFactory;
 use BplAdmin\Factory\Controller\UserManagement\RegisterControllerFactory;
 use BplAdmin\ModuleOpions\CrudOptions;
 use BplAdmin\Factory\ModuleOpions\CrudOptionsFactory;
+use BplAdmin\ModuleOpions\ExcludeOptions;
+use BplAdmin\Factory\ModuleOpions\ExcludeOptionsFactory;
 use BplAdmin\ModuleOpions\AccessOptions;
 use BplAdmin\Factory\ModuleOpions\AccessOptionsFactory;
 use BplAdmin\Service\ControllerAccessManagementService;
@@ -49,6 +51,7 @@ return [
     'service_manager' => [
         'factories' => [
             CrudOptions::class => CrudOptionsFactory::class,
+            ExcludeOptions::class => ExcludeOptionsFactory::class,
             AccessOptions::class => AccessOptionsFactory::class,
             ControllerAccessManagementService::class => ControllerAccessManagementServiceFactory::class,
             ControllerGuardConfigManager::class => ControllerGuardConfigManagerFactory::class,
@@ -166,19 +169,6 @@ return [
                             'defaults' => [
                                 'controller' => AccessListController::class,
                                 'action' => 'index',
-                            ],
-                        ],
-                        'may_terminate' => true,
-                        'child_routes' => [
-                            'list' => [
-                                'type' => Segment::class,
-                                'options' => [
-                                    'route' => '/list[/:pageNo]',
-                                    'defaults' => [
-                                        'controller' => ListController::class,
-                                        'action' => 'index',
-                                    ],
-                                ],
                             ],
                         ],
                     ],

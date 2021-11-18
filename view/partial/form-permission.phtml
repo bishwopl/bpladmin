@@ -10,7 +10,7 @@ foreach ($this->form as $element) {
         displayFieldset($element, $this);
     } else {
         echo '<div class="form_element">' . PHP_EOL;
-        echo $this->formRow()->render($element) . PHP_EOL;
+        echo $this->formElement()->render($element) . PHP_EOL;
         echo '</div>' . PHP_EOL;
     }
 }

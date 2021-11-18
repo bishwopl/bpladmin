@@ -10,4 +10,12 @@ return [
             'acl_file_location' => __DIR__.'/../../../../config/autoload',
         ],
     ],
+    'exclude' => [
+        'roles' => [
+            'guest'
+        ],
+        'resources' => [
+
+        ],
+    ],
 ];

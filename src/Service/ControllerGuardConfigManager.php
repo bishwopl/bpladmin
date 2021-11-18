@@ -82,6 +82,9 @@ class ControllerGuardConfigManager {
             if(strpos($value, 'Cli')){
                 unset($allControllerNames[$key]);
             }
+            if(strpos($value, 'Console')){
+                unset($allControllerNames[$key]);
+            }
         }
         return array_values($allControllerNames);
     }

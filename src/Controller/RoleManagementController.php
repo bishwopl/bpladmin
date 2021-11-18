@@ -20,7 +20,7 @@ class RoleManagementController extends AbstractActionController {
      * @var \BplAdmin\ModuleOpions\CrudOptions
      */
     private $options;
-
+    
     /**
      * @var \Laminas\Form\Form
      */
@@ -48,7 +48,7 @@ class RoleManagementController extends AbstractActionController {
             }
             $roles[] = $allRoles[$i];
         }
-
+        
         return new ViewModel([
             "roles" => $roles,
             "totalRecordCount" => sizeof($allRoles),
