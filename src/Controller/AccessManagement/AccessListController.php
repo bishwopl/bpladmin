@@ -36,28 +36,13 @@ class AccessListController extends AbstractActionController {
     }
 
     public function indexAction(): ViewModel {
-        $this->controllerAclService->initializeConfig();
-        $this->appPermissionForm->setData($this->controllerAclService->getAppGuardConfig()->getArrayCopy());
+        $roleId = $this->params()->fromRoute('role_id');
         
-        if($this->getRequest()->isPost()){
-            $data = $this->getRequest()->getPost();
-            $this->appPermissionForm->setData($data);
-            if($this->appPermissionForm->isValid()){
-                $h = new ArraySerializableHydrator();
-                $obj = \BplAdmin\Entity\AppPermission::getEmptyObject();
-                $h->hydrate($this->appPermissionForm->getData(), $obj);
-                $this->controllerAclService->writeConfig($obj);
-            }
-        }
+        $this->controllerAclService->initializeConfig();
+        \Symfony\Component\VarDumper\VarDumper::dump($this->controllerAclService->getAppGuardConfig()->toConfigArray());
+        die();
         
         $vm = new ViewModel();
-        $vm->setVariables([
-            'appConfig' => $this->controllerAclService->getAppGuardConfig(),
-            'controllerNames' => $this->controllerAclService->getControllerNames(),
-            'form' => $this->appPermissionForm,
-            'configArray' => $this->controllerAclService->getAppGuardConfig()->getArrayCopy(),
-            'roleNames' => $this->roleNames,
-        ]);
         return $vm;
     }
 
