@@ -3,7 +3,7 @@
 namespace BplAdmin\Controller\UserManagement;
 
 use CirclicalUser\Provider\UserProviderInterface;
-use BplUser\Provider\BplUserInterface;
+use BplUser\Contract\BplUserInterface;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Form\Form ;

@@ -71,12 +71,9 @@ class RoleManagementController extends AbstractActionController {
                 throw new \Exception("Role with name $roleName already exists !");
             }
 
-            $role = new Role();
-            $role->setName($roleName);
             $parent = trim($parentName) !== '' ? $this->roleMapper->getRoleWithName($parentName) : NULL;
-            if ($parent instanceof Role) {
-                $role->setParent($parent);
-            }
+            $role = new Role($roleName, $parent);
+            
             $this->roleMapper->save($role);
             $created = true;
         }
@@ -118,12 +115,8 @@ class RoleManagementController extends AbstractActionController {
                 $parentName = $this->roleForm->get('parent')->getValue();
                 $parent = trim($parentName) !== '' ? $this->roleMapper->getRoleWithName($parentName) : NULL;
                 
-                $newRole = new Role();
-                $newRole->setName($roleName);
+                $newRole = new Role($roleName, $parent);
                 $newRole->setId($role->getId());
-                if ($parent instanceof Role) {
-                    $newRole->setParent($parent);
-                }
                 $this->roleMapper->update($newRole);
    
                 $edited = true;

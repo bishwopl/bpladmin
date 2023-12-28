@@ -3,8 +3,8 @@
 namespace BplAdmin\Controller\UserManagement;
 
 use BplUser\Form\Register;
-use BplUser\Provider\BplUserInterface;
-use BplUser\Provider\BplUserServiceInterface;
+use BplUser\Contract\BplUserInterface;
+use BplUser\Contract\BplUserServiceInterface;
 use CirclicalUser\Service\AuthenticationService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
@@ -13,7 +13,7 @@ use Laminas\Math\Rand;
 class RegisterController extends AbstractActionController {
 
     /**
-     * @var \BplUser\Provider\BplUserServiceInterface
+     * @var \BplUser\Contract\BplUserServiceInterface
      */
     private $bplUserService;
 
@@ -28,7 +28,7 @@ class RegisterController extends AbstractActionController {
     private $registrationForm;
 
     /**
-     * @var \BplUser\Provider\BplUserInterface 
+     * @var \BplUser\Contract\BplUserInterface 
      */
     private $userEntity;
 
@@ -52,14 +52,14 @@ class RegisterController extends AbstractActionController {
         $this->registrationForm->setData($post);
 
         if ($this->getRequest()->isPost() && $this->registrationForm->isValid()) {
-
+            
             try {
                 $this->userEntity = $this->bplUserService->register($this->userEntity);
             } catch (\Exception $ex) {
                 $this->registrationForm->get('email')->setMessages([$ex->getMessage()]);
             }
         }
-
+        
         if ($this->getRequest()->isPost() && $this->userEntity !== false && $this->registrationForm->isValid()) {
             try {
                 $password = Rand::getString(10, 'abcdefghijklmnopqrstuvwxyz'

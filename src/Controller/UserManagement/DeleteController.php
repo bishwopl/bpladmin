@@ -2,7 +2,7 @@
 
 namespace BplAdmin\Controller\UserManagement;
 
-use BplUser\Provider\BplUserInterface;
+use BplUser\Contract\BplUserInterface;
 use CirclicalUser\Provider\AuthenticationProviderInterface;
 use CirclicalUser\Provider\UserProviderInterface;
 use Laminas\Mvc\Controller\AbstractActionController;
@@ -36,8 +36,8 @@ class DeleteController extends AbstractActionController {
         }
 
         if ($this->getRequest()->isPost()) {
-            $this->userMapper->delete($user);
             $authRecord = $this->authMapper->findByUserId($userId);
+            $this->userMapper->delete($user);
             $this->authMapper->delete($authRecord);
             $this->redirect()->toRoute('bpl-admin/user-management');
         }

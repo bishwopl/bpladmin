@@ -7,7 +7,7 @@
     </a>
 </p>
 <p>
-    Role Name : <?= $this->user->getEmail() ?>
+    User Email : <?= $this->user->getEmail() ?>
 </p>
 <form action="<?= $this->url('bpl-admin/user-management/delete',['user_id'=>$this->user->getId()]) ?>" method="POST">
     <button type="submit" class="btn btn-danger">

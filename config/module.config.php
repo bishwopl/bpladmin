@@ -165,7 +165,7 @@ return [
                     'access-management' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/access-management',
+                            'route' => '/access-management/[:role_id]',
                             'defaults' => [
                                 'controller' => AccessListController::class,
                                 'action' => 'index',

@@ -2,7 +2,7 @@
 $sn = $this->startIndex + 1;
 $count = 0;
 
-function getUserRolesInString(\BplUser\Provider\BplUserInterface $user) {
+function getUserRolesInString(\BplUser\Contract\BplUserInterface $user) {
     $role = [];
     $originalRoles = $user->getRoles();
     foreach ($originalRoles as $r) {
