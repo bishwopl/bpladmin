@@ -6,6 +6,7 @@ use BplAdmin\Controller\RoleManagementController;
 use BplAdmin\Form\RoleForm;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use CirclicalUser\Mapper\RoleMapper;
 
 class RoleManagementControllerFactory implements FactoryInterface {
 
@@ -18,13 +19,12 @@ class RoleManagementControllerFactory implements FactoryInterface {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) {
         $roleValueOptions = [];
         $config = $container->get('Config');
-        $roleMapperKey = $config['circlical']['user']['providers']['role'];
+        $roleMapperKey = $config['circlical']['user']['providers']['role'] ?? RoleMapper::class;
         $moduleOptions = $container->get(\BplAdmin\ModuleOpions\CrudOptions::class);
         $roleMapper = $container->get($roleMapperKey);
-        
         $allRoles = $roleMapper->getAllRoles();
-        
-        foreach($allRoles as $r){
+
+        foreach ($allRoles as $r) {
             $roleValueOptions[$r->getName()] = $r->getName();
         }
 
@@ -34,5 +34,4 @@ class RoleManagementControllerFactory implements FactoryInterface {
                 new RoleForm($roleValueOptions, 'role')
         );
     }
-
 }

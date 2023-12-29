@@ -80,6 +80,15 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
+                    'dashboard' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/dashboard',
+                            'defaults' => [
+                                'controller' => AdminController::class,
+                            ],
+                        ],
+                    ],
                     'role-management' => [
                         'type' => Segment::class,
                         'options' => [
@@ -182,31 +191,31 @@ return [
                 'bpl-admin' => [
                     'controllers' => [
                         AdminController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         RoleManagementController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         ListController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         RegisterController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         AssignRoleController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         ProfileController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         CredentialController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         DeleteController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                         AccessListController::class => [
-                            'default' => ['administrator'],
+                            'default' => [],
                         ],
                     ],
                 ],

@@ -21,7 +21,6 @@ class ListController extends AbstractActionController {
     private $userMapper;
 
     /**
-     *
      * @var \CirclicalUser\Provider\AuthenticationProviderInterface 
      */
     private $authMapper;
@@ -39,7 +38,7 @@ class ListController extends AbstractActionController {
     public function indexAction(): ViewModel {
         $pageNo = $this->params()->fromRoute('pageNo') !== NULL ? (int) $this->params()->fromRoute('pageNo') : 1;
         $startIndex = ($pageNo - 1) * $this->options->getItemsPerPage();
-        $searchTerm = $this->params()->fromQuery('email');
+        $searchTerm = $this->params()->fromQuery('email')??'';
         $authRecords = [];
         $users = [];
 

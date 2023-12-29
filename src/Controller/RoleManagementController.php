@@ -72,7 +72,11 @@ class RoleManagementController extends AbstractActionController {
             }
 
             $parent = trim($parentName) !== '' ? $this->roleMapper->getRoleWithName($parentName) : NULL;
-            $role = new Role($roleName, $parent);
+            if($this->roleMapper instanceof \BplUserMongoDbODM\Mapper\RoleMapper){
+                $role = new \BplUserMongoDbODM\Document\Role($roleName, $parent);
+            }else{
+                $role = new Role($roleName, $parent);
+            }
             
             $this->roleMapper->save($role);
             $created = true;
@@ -115,8 +119,14 @@ class RoleManagementController extends AbstractActionController {
                 $parentName = $this->roleForm->get('parent')->getValue();
                 $parent = trim($parentName) !== '' ? $this->roleMapper->getRoleWithName($parentName) : NULL;
                 
-                $newRole = new Role($roleName, $parent);
-                $newRole->setId($role->getId());
+                if($this->roleMapper instanceof \BplUserMongoDbODM\Mapper\RoleMapper){
+                    $newRole = $role;
+                    $newRole->setName($roleName);
+                    $newRole->setParent($parent);
+                }else{
+                    $newRole = new Role($roleName, $parent);
+                    $newRole->setId($role->getId());
+                }
                 $this->roleMapper->update($newRole);
    
                 $edited = true;

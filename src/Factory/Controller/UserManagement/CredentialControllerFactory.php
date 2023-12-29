@@ -6,6 +6,7 @@ use BplAdmin\Controller\UserManagement\CredentialController;
 use BplAdmin\Form\ChangeCredentialForm;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use CirclicalUser\Mapper\UserMapper;
 
 class CredentialControllerFactory implements FactoryInterface {
 
@@ -17,7 +18,7 @@ class CredentialControllerFactory implements FactoryInterface {
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) {
         $config = $container->get('Config');
-        $userMapperKey = $config['circlical']['user']['providers']['user'];
+        $userMapperKey = $config['circlical']['user']['providers']['user']??UserMapper::class;
         return new CredentialController(
                 $container->get($userMapperKey),
                 new ChangeCredentialForm('cred-form')
