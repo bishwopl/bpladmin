@@ -191,31 +191,31 @@ return [
                 'bpl-admin' => [
                     'controllers' => [
                         AdminController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         RoleManagementController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         ListController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         RegisterController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         AssignRoleController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         ProfileController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         CredentialController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         DeleteController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                         AccessListController::class => [
-                            'default' => [],
+                            'default' => ['administrator'],
                         ],
                     ],
                 ],
