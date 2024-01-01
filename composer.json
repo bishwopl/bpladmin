@@ -15,8 +15,8 @@
         }
     ],
     "require": {
-        "php": "^7.3 || ^8.0",
-        "bishwopl/bpluser": "^2.0"
+        "php": "^8.2",
+        "bishwopl/bpluser": "dev-master"
     },
     "autoload": {
         "psr-4": { 
