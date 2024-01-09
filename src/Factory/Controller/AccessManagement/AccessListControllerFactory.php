@@ -4,6 +4,7 @@ namespace BplAdmin\Factory\Controller\AccessManagement;
 
 use BplAdmin\Controller\AccessManagement\AccessListController;
 use BplAdmin\Service\ControllerGuardConfigManager;
+use BplAdmin\Service\ResourceGuardConfigManager;
 use BplAdmin\Form\AppPermissionForm;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -29,6 +30,7 @@ class AccessListControllerFactory implements FactoryInterface {
         }
         return new AccessListController(
                 $container->get(ControllerGuardConfigManager::class),
+                $container->get(ResourceGuardConfigManager::class),
                 $container->get(AppPermissionForm::class),
                 $roleValueOptions
         );

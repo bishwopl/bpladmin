@@ -1,0 +1,102 @@
+<?php
+
+/*@var $g GroupPermissionInterface */
+
+use CirclicalUser\Provider\GroupPermissionInterface;
+use BplAdmin\Service\ResourceGuardConfigManager;
+
+$rolesForForm = [
+    "" => "-- Select a Role --"
+];
+$actionsForForm = [];
+
+foreach($this->listOfActions as $a){
+    $actionsForForm[$a] = $a;
+}
+
+foreach($this->roleNames as $r){
+    $rolesForForm[$r->getName()] = $r->getName();
+}
+
+foreach($this->listOfAcls as $g){
+    unset($rolesForForm[$g->getRole()->getName()]);
+}
+
+$form = new Laminas\Form\Form('acl-form');
+$form->setAttribute('action', $this->url('bpl-admin/access-management', [
+            'action' => 'resource-acl-add',
+            'identifier' => urlencode($this->resourceName)
+]));
+$form->setAttribute('METHOD', "POST");
+$form->add([
+    "type" => \Laminas\Form\Element\Select::class,
+    "name" => "role",
+    "options" => [
+        "label" => "Role",
+        "value_options" => $rolesForForm,
+    ],
+    "attributes" => [
+        "class" => "form-control form-control-sm",
+        "required" => "required",
+    ],
+]);
+
+$form->add([
+    "type" => \Laminas\Form\Element\Select::class,
+    "name" => "actions",
+    "options" => [
+        "label" => "Allowed Actions",
+        "value_options" => $actionsForForm,
+    ],
+    "attributes" => [
+        "multiple" => true,
+        "class" => "form-control form-control-sm",
+        "required" => "required",
+    ],
+]);
+
+$form->add([
+    "type" => \Laminas\Form\Element\Submit::class,
+    "name" => "submit",
+    "options" => [
+        "label" => "",
+    ],
+    "attributes" => [
+        "class" => "btn btn-info ",
+        "value" => "Submit ACL"
+    ],
+]);
+
+?>
+
+<p>
+    <a class="btn btn-primary btn-sm" href="<?=
+$this->url('bpl-admin/access-management', [
+    'action' => 'resource-acl-list',
+    'identifier' => urlencode($this->resourceName)
+])
+?>">
+        Go Back
+    </a>
+</p>
+<h3>
+    Resource Access Management (Add)
+</h3>
+<h3>
+    (<?= $this->resourceName ?>)
+</h3>
+
+<p>
+    Select role and actions allowed for that role
+</p>
+
+<?php if(!is_null($this->message)): ?>
+<div class="alert alert-danger">
+    <?= $this->message ?>
+</div>
+<?php endif; ?>
+
+<p></p>
+
+<?= $this->partial('bpl-admin/form', ['form' => $form]) ?>
+

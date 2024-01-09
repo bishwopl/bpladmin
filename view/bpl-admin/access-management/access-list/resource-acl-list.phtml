@@ -1,0 +1,69 @@
+<?php
+
+use BplAdmin\Service\ResourceGuardConfigManager;
+
+$sn = 1;
+?>
+<p>
+    <a class="btn btn-primary btn-sm" href="<?=
+    $this->url('bpl-admin/access-management', [
+        'action' => 'resource'
+    ])
+    ?>">
+        Go to Back
+    </a>
+</p>
+<h3>
+    Resource Access Management (List)
+</h3>
+<p>
+    This is list of resources available in this application.
+</p>
+<p>
+    <a class="btn btn-primary btn-sm" href="<?=
+    $this->url('bpl-admin/access-management', [
+        'action' => 'resource-acl-add',
+        'identifier' => urlencode($this->resourceName)
+    ])
+    ?>">
+        Add New Rule
+    </a>
+</p>
+<table class="table table-sm table-hover table-stripped">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>Resource_Name</th>
+            <th>Chosen_Role</th>
+            <th>Allowed_by_hierarchy</th>
+            <th>Allowed_Actions</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->listOfAcls as $l) : ?>
+            <?php /* @var $l \CirclicalUser\Provider\GroupPermissionInterface */ ?>
+            <tr>
+                <td><?= $sn++ ?></td>
+                <td><?= $l->getResourceClass() ?></td>
+                <td><?= $l->getRole()->getName() ?></td>
+                <td><?= implode(', ', ResourceGuardConfigManager::getListOfRolesAllowedByHierarchy($l->getRole(), $this->roleNames)) ?></td>
+                <td><?= implode(', ', $l->getActions()) ?></td>
+                <td>
+                    <form method="POST" action="<?=
+                    $this->url('bpl-admin/access-management', [
+                        'action' => 'resource-acl-delete',
+                        'identifier' => urlencode($l->getResourceClass()),
+                        'roleName' => urlencode($l->getRole()->getName())
+                    ])
+                    ?>">
+                        <button class="btn btn-xs btn-danger" type="submit">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+    </tbody>
+</table>

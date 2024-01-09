@@ -33,6 +33,8 @@ use BplAdmin\Service\ControllerGuardConfigManager;
 use BplAdmin\Factory\Service\ControllerGuardConfigManagerFactory;
 use BplAdmin\Form\AppPermissionForm;
 use BplAdmin\Factory\Form\AppPermissionFormFactory;
+use BplAdmin\Service\ResourceGuardConfigManager;
+use BplAdmin\Factory\Service\ResourceGuardConfigManagerFactory;
 
 return [
     'controllers' => [
@@ -55,6 +57,7 @@ return [
             AccessOptions::class => AccessOptionsFactory::class,
             ControllerAccessManagementService::class => ControllerAccessManagementServiceFactory::class,
             ControllerGuardConfigManager::class => ControllerGuardConfigManagerFactory::class,
+            ResourceGuardConfigManager::class => ResourceGuardConfigManagerFactory::class,
             AppPermissionForm::class => AppPermissionFormFactory::class,
         ],
     ],
@@ -174,7 +177,7 @@ return [
                     'access-management' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/access-management/[:role_id]',
+                            'route' => '/access-management[/:action][/:identifier][/:roleName]',
                             'defaults' => [
                                 'controller' => AccessListController::class,
                                 'action' => 'index',

@@ -1,28 +1,13 @@
-<?php
-
-/* @var $appConfig \BplAdmin\Entity\AppPermission */
-//$appConfig = $this->appConfig;
-
-//\Symfony\Component\VarDumper\VarDumper::dump($appConfig);
-
-//\Symfony\Component\VarDumper\VarDumper::dump($this->appConfig->getArrayCopy());
-
-//\Symfony\Component\VarDumper\VarDumper::dump($this->configArray);
-
-//\Symfony\Component\VarDumper\VarDumper::dump($this->form);
-?>
-<h1>
-    Controller Access Management
-</h1>
+<h2>Welcome <?= $this->getUserEmail() ?> </h2>
+<p></p>
 <p>
-    <a class="btn btn-primary btn-sm" href="<?= $this->url('bpl-admin') ?>">
-        Go to Admin Page
+    <a class="btn btn-success" href="<?= $this->url('bpl-admin/access-management',['action' => 'controller']) ?>">
+        Go to Controller Access Management
     </a>
 </p>
-<p>
-    Select desired roles for each controller and actions from the form below. 
-    Please refresh the application after form submission. Delete any configuration
-    cache file.
-</p>
 
-<?php echo $this->partial('bpl-admin/form', ['form' => $this->form]) ?>
+<p>
+    <a class="btn btn-success" href="<?= $this->url('bpl-admin/access-management',['action' => 'resource']) ?>">
+        Go to Resource Access Management
+    </a>
+</p>

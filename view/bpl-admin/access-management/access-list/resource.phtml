@@ -1,0 +1,49 @@
+<?php
+/* @var $appConfig \BplAdmin\Entity\AppPermission */
+?>
+<h3>
+    Resource Access Management
+</h3>
+<p>
+    <a class="btn btn-primary btn-sm" href="<?= $this->url('bpl-admin') ?>">
+        Go to Admin Page
+    </a>
+</p>
+<p>
+    This is list of resources available in this application.
+</p>
+
+<table class="table table-sm table-hover table-stripped">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>Resource</th>
+            <th>No of ACLs</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->listOfResources as $l) : ?>
+            <tr>
+                <td><?= $l['SN'] ?></td>
+                <td><?= $l['resourceName'] ?></td>
+                <td><?= $l['aclCount'] ?> Rule<?= $l['aclCount'] > 1 ? 's' : '' ?></td>
+                <td>
+                    <a 
+                        class="btn btn-sm btn-primary" 
+                        href="<?=
+                        $this->url(
+                                'bpl-admin/access-management', [
+                            'action' => 'resource-acl-list',
+                            'identifier' => $l['identifier']
+                                ])
+                        ?>"
+                        >
+                        Change ACL for this resource
+                    </a>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+    </tbody>
+</table>

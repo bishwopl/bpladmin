@@ -141,6 +141,21 @@ class AppPermission implements ArraySerializableInterface {
             ],
         ];
     }
+    
+    public function toControllerWiseArray(): array {
+        $controllerConfig = [];
+        foreach ($this->controllerPermissions as $c) {
+            $controllerConfig = array_merge($controllerConfig, $c->toConfigArray());
+        }
+        
+        foreach($controllerConfig as $controllerName => $config){
+            if(sizeof($config) == 0){
+                unset($controllerConfig[$controllerName]);
+            }
+        }
+
+        return $controllerConfig;
+    }
 
     private function getControllerGaurd(string $controllerName): ?ControllerPermission {
         foreach ($this->controllerPermissions as $c) {

@@ -42,7 +42,7 @@ class ListController extends AbstractActionController {
         $authRecords = [];
         $users = [];
 
-        $allUsers = $this->userMapper->getAllUsers();
+        $allUsers = [$this->userMapper->findByEmail($searchTerm)];
         $totalRecordCount = sizeof($allUsers);
 
         if (trim($searchTerm) !== '') {

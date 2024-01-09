@@ -6,39 +6,25 @@ use BplAdmin\Entity\AppPermission;
 use BplAdmin\ModuleOpions\AccessOptions;
 use CirclicalUser\Provider\RoleProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
+use Laminas\ConfigAggregator\ConfigAggregator;
+use Laminas\ConfigAggregator\ArrayProvider;
 
 class ControllerGuardConfigManager {
 
-    /**
-     * @var \BplAdmin\Entity\AppPermission
-     */
-    protected $appPermissions;
+    protected AppPermission $appPermissions;
 
-    /**
-     * @var \BplAdmin\ModuleOpions\AccessOptions 
-     */
-    protected $aclOptions;
+    protected AccessOptions $aclOptions;
 
-    /**
-     * @var \CirclicalUser\Provider\RoleProviderInterface 
-     */
-    private $roleMapper;
+    private RoleProviderInterface $roleMapper;
+    
+    protected Collection $controllerPermissions;
 
-    /**
-     * @var array
-     */
-    protected $applicationConfigArray;
+    protected array $applicationConfigArray;
 
-    /**
-     * @var bool
-     */
-    protected $initialized = false;
+    protected bool $initialized = false;
 
-    /**
-     * @param \BplAdmin\ModuleOpions\AccessOptions $aclOptions
-     * @param array $applicationConfigArray
-     */
     public function __construct(AccessOptions $aclOptions, RoleProviderInterface $roleMapper, array $applicationConfigArray) {
         $this->aclOptions = $aclOptions;
         $this->roleMapper = $roleMapper;
@@ -70,10 +56,14 @@ class ControllerGuardConfigManager {
         if (is_file($configFileName)) {
             unlink($configFileName);
         }
+        
+        
+        $configAggregator = new ConfigAggregator([new ArrayProvider([]), new ArrayProvider($a->toConfigArray())]);
+
         $writer = new ConfigWriter();
         $writer->setUseBracketArraySyntax(true);
         $writer->setUseClassNameScalars(true);
-        $writer->toFile($configFileName, $a->toConfigArray());
+        $writer->toFile($configFileName, $configAggregator->getMergedConfig());
     }
 
     public function getControllerNames(): array {
@@ -92,6 +82,12 @@ class ControllerGuardConfigManager {
     public function getActionNames($controller): array {
         $actions = [];
         $className = is_object($controller) ? get_class($controller) : $controller;
+        if(!class_exists($className)){
+            $className .= 'Controller';
+            if(!class_exists($className)){
+                return [];
+            }
+        }
         $methods = get_class_methods($className);
         $methods = $methods == NULL ? [] : $methods;
         foreach ($methods as $m) {

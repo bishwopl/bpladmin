@@ -1,0 +1,130 @@
+<?php
+$sn = 1;
+
+function ___isAllowed($originalConfig, $roleName, $controllerName, $actionName = ""): bool {
+    if (!isset($originalConfig[$controllerName])) {
+        return false;
+    }
+
+    if ($actionName == "") {
+        $ret = isset($originalConfig[$controllerName]['default']) &&
+                in_array($roleName, $originalConfig[$controllerName]['default']);
+        return $ret;
+    } else {
+        return isset($originalConfig[$controllerName]['actions']) &&
+                isset($originalConfig[$controllerName]['actions'][$actionName]) &&
+                in_array($roleName, $originalConfig[$controllerName]['actions'][$actionName]);
+    }
+    return false;
+}
+
+function ___isAllAllowed($originalConfig, $controllerName): bool {
+    return isset($originalConfig[$controllerName]['default']) && sizeof($originalConfig[$controllerName]['default']) == 0;
+}
+?>
+<style>
+    td {
+        vertical-align: middle;
+    }
+</style>
+<h3>
+    Controller Access Management
+</h3>
+<p>
+    <a class="btn btn-primary btn-sm" href="<?= $this->url('bpl-admin') ?>">
+        Go to Admin Page
+    </a>
+</p>
+<p>
+    Select desired roles for each controller and actions from the form below. 
+    Please refresh the application after form submission. Delete any configuration
+    cache file.
+</p>
+
+<div class="row">
+    <div class="col-md-12">
+        <form class="form form-horizontal" method="POST" action="<?= $this->url('bpl-admin/access-management',['action' => 'controller']) ?>">
+            <?php foreach ($this->availableControllers as $controllerName => $actionNames): ?>
+                <?php
+                if (str_contains($controllerName, 'BplUser') || str_contains($controllerName, 'BplAdmin')) {
+                    continue;
+                }
+                ?>
+
+                <fieldset>
+                    <legend id="<?= md5($controllerName) ?>" title="Show ACL" style="cursor: pointer;" onclick="show('<?= md5($controllerName) ?>')">
+                        <span style="font-size:15px; font-style: italic;"><?= $controllerName ?></span>
+                        <span style="font-size:13px; font-style: italic;" class="badge badge-info pull-right">
+                            <?= sizeof($actionNames) ?> Action(s)
+                        </span>
+                    </legend>
+                    <div class="<?= md5($controllerName) ?>" style="display:none">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Default ACL</th>
+                                    <th colspan="2">Action Wise ACL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="<?= sizeof($actionNames) + 1 ?>">
+                                        <select class="select2" name="<?= $controllerName . '[default]' ?>[]" multiple="multiple" style="width:300px;">
+                                            <option value="none">--None--</option>
+                                            <option value="all" <?= ___isAllAllowed($this->originalConfig, $controllerName) ? 'selected=""' : '' ?>>
+                                                All
+                                            </option>
+                                            <?php foreach ($this->roleNames as $roleName): ?>
+                                                <option value="<?= $roleName ?>" <?= ___isAllowed($this->originalConfig, $roleName, $controllerName) ? 'selected=""' : '' ?>>
+                                                    <?= $roleName ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <?php foreach ($actionNames as $actionName): ?>
+                                    <tr>
+                                        <td><strong><?= $actionName ?></strong></td>
+                                        <td>
+                                            <div class="<?= md5($controllerName) ?>" style="display:none">
+                                                <select class="select2" name="<?= $controllerName . '[actions][' . $actionName . ']' ?>[]" multiple="multiple" style="width:300px;">
+                                                    <option value="">--None--</option>
+                                                    <?php foreach ($this->roleNames as $roleName): ?>
+                                                        <option value="<?= $roleName ?>" <?= ___isAllowed($this->originalConfig, $roleName, $controllerName, $actionName) ? 'selected=""' : '' ?>>
+                                                            <?= $roleName ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+
+            <?php endforeach; ?>
+            <button class="btn btn-danger" type="submit" value="Submit ACL">Submit ACL</button>
+        </form>
+    </div>
+</div>
+<script>
+    function show(classA) {
+        const elementsArray = document.getElementsByClassName(classA);
+        const toggleSwitch = document.getElementById(classA);
+        [...elementsArray].forEach((element, index, array) => {
+            if (element.style.display === "none") {
+                element.style.display = "block";
+                toggleSwitch.title = 'Hide ACL';
+            } else {
+                element.style.display = "none";
+                toggleSwitch.title = 'Show ACL';
+            }
+        });
+    }
+    $(document).ready(function () {
+        $('.select2').select2({theme: "bootstrap4 success"});
+    });
+</script>
+
