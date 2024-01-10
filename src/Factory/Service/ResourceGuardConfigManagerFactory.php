@@ -27,6 +27,21 @@ class ResourceGuardConfigManagerFactory implements FactoryInterface {
 
         $resourceActionList = [];
         $apiConfigs = isset($config['api-tools-rest'])?$config['api-tools-rest']:[];
+        $authConfigArray = $config['api-tools-mvc-auth']['authorization'];
+
+        foreach($authConfigArray as $resourceName => $configuration){
+            if(!is_array($configuration)){
+                continue;
+            }
+            if(isset($apiConfigs[$resourceName])){
+                continue;
+            }else{
+                foreach($configuration['actions'] as $action => $httpMethods){
+                    $resourceActionList[$resourceName."::$action"] = $httpMethods;
+                }
+            }
+        }
+        
         foreach($apiConfigs as $resourceName => $configuration){
             if(isset($configuration['entity_http_methods'])){
                 $resourceActionList[$resourceName.'::entity'] = $configuration['entity_http_methods'];

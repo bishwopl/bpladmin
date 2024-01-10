@@ -67,7 +67,10 @@ class ControllerGuardConfigManager {
     }
 
     public function getControllerNames(): array {
-        $allControllerNames = array_keys($this->applicationConfigArray['controllers']['factories']);
+        $defaultControllers = array_keys($this->applicationConfigArray['controllers']['factories']);
+        $restControllers = array_keys($this->applicationConfigArray['api-tools-rest']);
+        $allControllerNames = array_merge($defaultControllers, $restControllers);
+        sort($allControllerNames);
         foreach ($allControllerNames as $key=>$value){
             if(strpos($value, 'Cli')){
                 unset($allControllerNames[$key]);

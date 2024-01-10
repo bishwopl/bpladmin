@@ -1,6 +1,5 @@
 <?php
-
-/*@var $g GroupPermissionInterface */
+/* @var $g GroupPermissionInterface */
 
 use CirclicalUser\Provider\GroupPermissionInterface;
 use BplAdmin\Service\ResourceGuardConfigManager;
@@ -9,16 +8,21 @@ $rolesForForm = [
     "" => "-- Select a Role --"
 ];
 $actionsForForm = [];
-
-foreach($this->listOfActions as $a){
+foreach ($this->listOfActions as $key => $a) {
+    if (is_bool($a)) {
+        if ($a == false) {
+            continue;
+        }
+        $a = $key;
+    }
     $actionsForForm[$a] = $a;
 }
 
-foreach($this->roleNames as $r){
+foreach ($this->roleNames as $r) {
     $rolesForForm[$r->getName()] = $r->getName();
 }
 
-foreach($this->listOfAcls as $g){
+foreach ($this->listOfAcls as $g) {
     unset($rolesForForm[$g->getRole()->getName()]);
 }
 
@@ -66,7 +70,6 @@ $form->add([
         "value" => "Submit ACL"
     ],
 ]);
-
 ?>
 
 <p>
@@ -82,19 +85,20 @@ $this->url('bpl-admin/access-management', [
 <h3>
     Resource Access Management (Add)
 </h3>
-<h3>
-    (<?= $this->resourceName ?>)
-</h3>
+<small>
+    Resource Name : <i><?= $this->resourceName ?></i>
+</small>
+<p>&nbsp;</p>
 
 <p>
     Select role and actions allowed for that role
 </p>
 
-<?php if(!is_null($this->message)): ?>
-<div class="alert alert-danger">
+<?php if (!is_null($this->message)): ?>
+    <div class="alert alert-danger">
     <?= $this->message ?>
-</div>
-<?php endif; ?>
+    </div>
+    <?php endif; ?>
 
 <p></p>
 

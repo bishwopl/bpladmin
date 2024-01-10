@@ -3,9 +3,9 @@
 namespace BplAdmin\Factory\Controller\UserManagement;
 
 use BplAdmin\Controller\UserManagement\ListController;
+use BplAdmin\Mapper\UserMapper;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use CirclicalUser\Mapper\UserMapper;
 use CirclicalUser\Mapper\AuthenticationMapper;
 
 class ListControllerFactory implements FactoryInterface {
@@ -19,7 +19,7 @@ class ListControllerFactory implements FactoryInterface {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) {
         $config = $container->get('Config');
         $authMapperKey = $config['circlical']['user']['providers']['auth'] ?? AuthenticationMapper::class;
-        $userMapperKey = $config['circlical']['user']['providers']['user'] ?? UserMapper::class;
+        $userMapperKey = UserMapper::class;
 
         return new ListController(
                 $container->get(\BplAdmin\ModuleOpions\CrudOptions::class),

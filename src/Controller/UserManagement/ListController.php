@@ -3,75 +3,43 @@
 namespace BplAdmin\Controller\UserManagement;
 
 use BplAdmin\ModuleOpions\CrudOptions;
+use BplAdmin\Contract\UserMapperInterface;
 use CirclicalUser\Provider\AuthenticationProviderInterface;
-use CirclicalUser\Provider\UserProviderInterface;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
 class ListController extends AbstractActionController {
 
-    /**
-     * @var \BplAdmin\ModuleOpions\CrudOptions
-     */
-    private $options;
-
-    /**
-     * @var \CirclicalUser\Provider\UserProviderInterface
-     */
-    private $userMapper;
-
-    /**
-     * @var \CirclicalUser\Provider\AuthenticationProviderInterface 
-     */
-    private $authMapper;
-
     public function __construct(
-            CrudOptions $options,
-            UserProviderInterface $userMapper,
-            AuthenticationProviderInterface $authMapper
-    ) {
-        $this->options = $options;
-        $this->userMapper = $userMapper;
-        $this->authMapper = $authMapper;
-    }
+            private CrudOptions $options,
+            private UserMapperInterface $userMapper,
+            private AuthenticationProviderInterface $authMapper
+    ) {}
 
     public function indexAction(): ViewModel {
         $pageNo = $this->params()->fromRoute('pageNo') !== NULL ? (int) $this->params()->fromRoute('pageNo') : 1;
         $startIndex = ($pageNo - 1) * $this->options->getItemsPerPage();
-        $searchTerm = $this->params()->fromQuery('email')??'';
+        $searchTerm = trim($this->params()->fromQuery('email')??'');
         $authRecords = [];
         $users = [];
 
-        $allUsers = [$this->userMapper->findByEmail($searchTerm)];
-        $totalRecordCount = sizeof($allUsers);
-
-        if (trim($searchTerm) !== '') {
-            $totalRecordCount = 0;
-            foreach($allUsers as $u){
-                if(strpos($u->getEmail(), $searchTerm) !== false){
-                    if($totalRecordCount>=$startIndex && $totalRecordCount<$startIndex + $this->options->getItemsPerPage()){
-                        $users[] = $u;
-                    }
-                    $totalRecordCount ++;
-                }
-            }
+        if ($searchTerm !== '') {
+            $user = $this->userMapper->findByEmail($searchTerm);
+            $allUsers = [$user];
+            $totalRecordCount = is_object($user)?1:0;
         } else {
-            for ($i = $startIndex; $i < $startIndex + $this->options->getItemsPerPage(); $i++) {
-                if (!isset($allUsers[$i])) {
-                    break;
-                }
-                $users[] = $allUsers[$i];
-            }
+            $allUsers = $this->userMapper->getUsers($startIndex, $this->options->getItemsPerPage());
+            $totalRecordCount = $this->userMapper->getTotalUserCount();
         }
 
-        $noOfPages = (int) ceil($totalRecordCount / $this->options->getItemsPerPage());
-
-        foreach ($users as $u) {
+        foreach ($allUsers as $u) {
             $authRecords[] = $this->authMapper->findByUserId($u->getId());
         }
+        
+        $noOfPages = (int) ceil($totalRecordCount / $this->options->getItemsPerPage());
 
         return new ViewModel([
-            'users' => $users,
+            'users' => $allUsers,
             'authRecords' => $authRecords,
             'totalRecordCount' => $totalRecordCount,
             'noOfPages' => $noOfPages,

@@ -35,6 +35,8 @@ use BplAdmin\Form\AppPermissionForm;
 use BplAdmin\Factory\Form\AppPermissionFormFactory;
 use BplAdmin\Service\ResourceGuardConfigManager;
 use BplAdmin\Factory\Service\ResourceGuardConfigManagerFactory;
+use BplAdmin\Mapper\UserMapper;
+use BplAdmin\Factory\Mapper\UserMapperFactory;
 
 return [
     'controllers' => [
@@ -59,6 +61,7 @@ return [
             ControllerGuardConfigManager::class => ControllerGuardConfigManagerFactory::class,
             ResourceGuardConfigManager::class => ResourceGuardConfigManagerFactory::class,
             AppPermissionForm::class => AppPermissionFormFactory::class,
+            UserMapper::class => UserMapperFactory::class,
         ],
     ],
     'bpl_admin' => [

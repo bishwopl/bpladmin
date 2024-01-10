@@ -41,7 +41,11 @@ class AccessListController extends AbstractActionController {
 
         if ($this->getRequest()->isPost()) {
             $data = $this->getRequest()->getPost()->toArray();
+            //\Symfony\Component\VarDumper\VarDumper::dump($data);
             foreach ($data as $controllerName => $config) {
+                if(!isset($config['default'])){
+                    continue;
+                }
                 if (sizeof($config['default']) == 0 || in_array('none', $config['default'])) {
                     $data[$controllerName]['default'] = [Uuid::uuid4()->toString() . " Random role name so that CirclicalUser doesnot throes exception"];
                 } elseif (in_array('all', $config['default'])) {
